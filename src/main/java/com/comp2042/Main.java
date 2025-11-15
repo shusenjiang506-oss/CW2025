@@ -7,26 +7,33 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+
+// Extract constants, remove unnecessary ResourceBundle, improve naming, add validation
 
 public class Main extends Application {
 
+    private static final int WINDOW_WIDTH = 234;
+    private static final int WINDOW_HEIGHT = 510;
+    private static final String WINDOW_TITLE = "TetrisJFX";
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         URL location = getClass().getClassLoader().getResource("gameLayout.fxml");
-        ResourceBundle resources = null;
-        FXMLLoader fxmlLoader = new FXMLLoader(location, resources);
-        Parent root = fxmlLoader.load();
-        GuiController c = fxmlLoader.getController();
+        if (location == null) {
+            throw new IllegalStateException("Cannot find gameLayout.fxml");
+        }
 
-        primaryStage.setTitle("TetrisJFX");
-        Scene scene = new Scene(root, 300, 510);
+        FXMLLoader fxmlLoader = new FXMLLoader(location);
+        Parent root = fxmlLoader.load();
+        GuiController controller = fxmlLoader.getController();
+
+        primaryStage.setTitle(WINDOW_TITLE);
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
-        new GameController(c);
-    }
 
+        new GameController(controller);
+    }
 
     public static void main(String[] args) {
         launch(args);
