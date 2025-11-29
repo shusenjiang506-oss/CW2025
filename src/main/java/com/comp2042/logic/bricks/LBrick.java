@@ -1,43 +1,34 @@
 package com.comp2042.logic.bricks;
 
-import com.comp2042.MatrixOperations;
+final class LBrick extends AbstractBrick {
 
-import java.util.ArrayList;
-import java.util.List;
-
-final class LBrick implements Brick {
-
-    private final List<int[][]> brickMatrix = new ArrayList<>();
-
-    public LBrick() {
-        brickMatrix.add(new int[][]{
-                {0, 0, 0, 0},
-                {0, 3, 3, 3},
-                {0, 3, 0, 0},
-                {0, 0, 0, 0}
-        });
-        brickMatrix.add(new int[][]{
-                {0, 0, 0, 0},
-                {0, 3, 3, 0},
-                {0, 0, 3, 0},
-                {0, 0, 3, 0}
-        });
-        brickMatrix.add(new int[][]{
-                {0, 0, 0, 0},
-                {0, 0, 3, 0},
-                {3, 3, 3, 0},
-                {0, 0, 0, 0}
-        });
-        brickMatrix.add(new int[][]{
-                {0, 3, 0, 0},
-                {0, 3, 0, 0},
-                {0, 3, 3, 0},
-                {0, 0, 0, 0}
-        });
-    }
+    private static final int BRICK_COLOR = 3;
 
     @Override
-    public List<int[][]> getShapeMatrix() {
-        return MatrixOperations.deepCopyList(brickMatrix);
+    protected void initializeShapes() {
+        addRotation(new int[][]{
+                {0, 0, 0, 0},
+                {0, BRICK_COLOR, BRICK_COLOR, BRICK_COLOR},
+                {0, BRICK_COLOR, 0, 0},
+                {0, 0, 0, 0}
+        });
+        addRotation(new int[][]{
+                {0, 0, 0, 0},
+                {0, BRICK_COLOR, BRICK_COLOR, 0},
+                {0, 0, BRICK_COLOR, 0},
+                {0, 0, BRICK_COLOR, 0}
+        });
+        addRotation(new int[][]{
+                {0, 0, 0, 0},
+                {0, 0, BRICK_COLOR, 0},
+                {BRICK_COLOR, BRICK_COLOR, BRICK_COLOR, 0},
+                {0, 0, 0, 0}
+        });
+        addRotation(new int[][]{
+                {0, BRICK_COLOR, 0, 0},
+                {0, BRICK_COLOR, 0, 0},
+                {0, BRICK_COLOR, BRICK_COLOR, 0},
+                {0, 0, 0, 0}
+        });
     }
 }

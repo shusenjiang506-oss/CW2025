@@ -1,26 +1,16 @@
 package com.comp2042.logic.bricks;
 
-import com.comp2042.MatrixOperations;
+final class OBrick extends AbstractBrick {
 
-import java.util.ArrayList;
-import java.util.List;
+    private static final int BRICK_COLOR = 4;
 
-final class OBrick implements Brick {
-
-    private final List<int[][]> brickMatrix = new ArrayList<>();
-
-    public OBrick() {
-        brickMatrix.add(new int[][]{
+    @Override
+    protected void initializeShapes() {
+        addRotation(new int[][]{
                 {0, 0, 0, 0},
-                {0, 4, 4, 0},
-                {0, 4, 4, 0},
+                {0, BRICK_COLOR, BRICK_COLOR, 0},
+                {0, BRICK_COLOR, BRICK_COLOR, 0},
                 {0, 0, 0, 0}
         });
     }
-
-    @Override
-    public List<int[][]> getShapeMatrix() {
-        return MatrixOperations.deepCopyList(brickMatrix);
-    }
-
 }

@@ -1,31 +1,22 @@
 package com.comp2042.logic.bricks;
 
-import com.comp2042.MatrixOperations;
+final class ZBrick extends AbstractBrick {
 
-import java.util.ArrayList;
-import java.util.List;
-
-final class ZBrick implements Brick {
-
-    private final List<int[][]> brickMatrix = new ArrayList<>();
-
-    public ZBrick() {
-        brickMatrix.add(new int[][]{
-                {0, 0, 0, 0},
-                {7, 7, 0, 0},
-                {0, 7, 7, 0},
-                {0, 0, 0, 0}
-        });
-        brickMatrix.add(new int[][]{
-                {0, 7, 0, 0},
-                {7, 7, 0, 0},
-                {7, 0, 0, 0},
-                {0, 0, 0, 0}
-        });
-    }
+    private static final int BRICK_COLOR = 7;
 
     @Override
-    public List<int[][]> getShapeMatrix() {
-        return MatrixOperations.deepCopyList(brickMatrix);
+    protected void initializeShapes() {
+        addRotation(new int[][]{
+                {0, 0, 0, 0},
+                {BRICK_COLOR, BRICK_COLOR, 0, 0},
+                {0, BRICK_COLOR, BRICK_COLOR, 0},
+                {0, 0, 0, 0}
+        });
+        addRotation(new int[][]{
+                {0, BRICK_COLOR, 0, 0},
+                {BRICK_COLOR, BRICK_COLOR, 0, 0},
+                {BRICK_COLOR, 0, 0, 0},
+                {0, 0, 0, 0}
+        });
     }
 }
