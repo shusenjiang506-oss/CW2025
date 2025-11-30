@@ -1,8 +1,12 @@
 package com.comp2042;
 
 public class GameController implements InputEventListener {
+    private static final int BOARD_HEIGHT = 25;
+    private static final int BOARD_WIDTH = 10;
+    private static final int SOFT_DROP_BONUS = 1;
 
-    private Board board = new SimpleBoard(25, 10);
+    //private Board board = new SimpleBoard(25, 10);
+    private Board board = new SimpleBoard(BOARD_HEIGHT, BOARD_WIDTH);
 
     private final GuiController viewGuiController;
 
@@ -24,6 +28,7 @@ public class GameController implements InputEventListener {
             if (clearRow.getLinesRemoved() > 0) {
                 board.getScore().add(clearRow.getScoreBonus());
             }
+
             if (board.createNewBrick()) {
                 viewGuiController.gameOver();
             }
@@ -32,7 +37,8 @@ public class GameController implements InputEventListener {
 
         } else {
             if (event.getEventSource() == EventSource.USER) {
-                board.getScore().add(1);
+                //board.getScore().add(1);
+                board.getScore().add(SOFT_DROP_BONUS);
             }
         }
         return new DownData(clearRow, board.getViewData());
