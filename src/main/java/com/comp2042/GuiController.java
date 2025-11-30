@@ -39,6 +39,10 @@ public class GuiController implements Initializable {
     @FXML
     private GameOverPanel gameOverPanel;
 
+    // New Feature 1: P - Pause
+    private PausePanel pausePanel;
+
+
     private Rectangle[][] displayMatrix;
 
     private InputEventListener eventListener;
@@ -77,17 +81,44 @@ public class GuiController implements Initializable {
                         keyEvent.consume();
                     }
                 }
+                // New Feature 1: P - Pause
+                if (keyEvent.getCode() == KeyCode.P) {
+                    togglePause();
+                    keyEvent.consume();
+                }
+
                 if (keyEvent.getCode() == KeyCode.N) {
                     newGame(null);
                 }
             }
         });
+
+        // New Feature 1: P - Pause
+        pausePanel = new PausePanel();
         gameOverPanel.setVisible(false);
 
         final Reflection reflection = new Reflection();
         reflection.setFraction(0.8);
         reflection.setTopOpacity(0.9);
         reflection.setTopOffset(-12);
+    }
+
+    // New Feature 1: P - Pause
+    private void togglePause() {
+        if (isGameOver.getValue() == Boolean.TRUE) {
+            return;
+        }
+
+        if (isPause.getValue() == Boolean.TRUE) {
+            timeLine.play();
+            pausePanel.setVisible(false);
+            isPause.setValue(Boolean.FALSE);
+        } else {
+            timeLine.pause();
+            pausePanel.setVisible(true);
+            isPause.setValue(Boolean.TRUE);
+        }
+        gamePanel.requestFocus();
     }
 
     public void initGameView(int[][] boardMatrix, ViewData brick) {
@@ -212,6 +243,8 @@ public class GuiController implements Initializable {
     public void newGame(ActionEvent actionEvent) {
         timeLine.stop();
         gameOverPanel.setVisible(false);
+        // New Feature 1: P - Pause
+        pausePanel.setVisible(false);
         eventListener.createNewGame();
         gamePanel.requestFocus();
         timeLine.play();
@@ -220,6 +253,8 @@ public class GuiController implements Initializable {
     }
 
     public void pauseGame(ActionEvent actionEvent) {
-        gamePanel.requestFocus();
+        // New Feature 1: P - Pause
+        togglePause();
+        //gamePanel.requestFocus();
     }
 }
