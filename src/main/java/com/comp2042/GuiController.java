@@ -22,10 +22,17 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.control.Label;
 
 public class GuiController implements Initializable {
 
     private static final int BRICK_SIZE = 20;
+    //New Feature 2: difficulty level system
+    private static final int BASE_GAME_SPEED_MS = 500;
+    private static final int MIN_GAME_SPEED_MS = 100;
+
+    @FXML
+    private Label levelLabel;
 
     @FXML
     private GridPane gamePanel;
@@ -54,6 +61,25 @@ public class GuiController implements Initializable {
     private final BooleanProperty isPause = new SimpleBooleanProperty();
 
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
+
+    //New Feature 2: difficulty level system
+    public void updateGameSpeed(int level) {
+        int newSpeed = Math.max(
+                BASE_GAME_SPEED_MS - (level - 1) * 40,
+                MIN_GAME_SPEED_MS
+        );
+
+        System.out.println("Level UP! Current Level: " + level);
+
+        timeLine.stop();
+        timeLine = new Timeline(new KeyFrame(
+                Duration.millis(newSpeed),
+                ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
+        ));
+        timeLine.setCycleCount(Timeline.INDEFINITE);
+        timeLine.play();
+
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
