@@ -23,4 +23,7 @@ public interface Board {
     Score getScore();
 
     void newGame();
+
+    // New Feature 4: hard landing method
+    int hardDrop();
 }

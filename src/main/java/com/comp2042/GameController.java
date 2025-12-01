@@ -12,6 +12,9 @@ public class GameController implements InputEventListener {
     //private Board board = new SimpleBoard(25, 10);
     private Board board = new SimpleBoard(BOARD_HEIGHT, BOARD_WIDTH);
 
+    // New Feature 4: hard landing method
+    private static final int HARD_DROP_BONUS = 2;
+
     private final GuiController viewGuiController;
 
 
@@ -75,6 +78,26 @@ public class GameController implements InputEventListener {
     public ViewData onRotateEvent(MoveEvent event) {
         board.rotateLeftBrick();
         return board.getViewData();
+    }
+
+    // New Feature 4: hard landing method
+    public DownData onHardDropEvent(MoveEvent event) {
+        int dropDistance = board.hardDrop();
+        board.getScore().add(dropDistance * HARD_DROP_BONUS);
+
+        board.mergeBrickToBackground();
+        ClearRow clearRow = board.clearRows();
+        if (clearRow.getLinesRemoved() > 0) {
+            board.getScore().add(clearRow.getScoreBonus());
+        }
+
+        if (board.createNewBrick()) {
+            viewGuiController.gameOver();
+        }
+
+        viewGuiController.refreshGameBackground(board.getBoardMatrix());
+
+        return new DownData(clearRow, board.getViewData());
     }
 
     //New Feature 2: difficulty level system

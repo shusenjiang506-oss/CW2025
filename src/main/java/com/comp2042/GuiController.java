@@ -81,6 +81,21 @@ public class GuiController implements Initializable {
 
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
 
+
+    // New Feature 4: hard landing method
+    private void hardDrop(MoveEvent event) {
+        if (isPause.getValue() == Boolean.FALSE) {
+            DownData downData = ((GameController)eventListener).onHardDropEvent(event);
+            if (downData.getClearRow() != null && downData.getClearRow().getLinesRemoved() > 0) {
+                NotificationPanel notificationPanel = new NotificationPanel("+" + downData.getClearRow().getScoreBonus());
+                groupNotification.getChildren().add(notificationPanel);
+                notificationPanel.showScore(groupNotification.getChildren());
+            }
+            refreshBrick(downData.getViewData());
+        }
+        gamePanel.requestFocus();
+    }
+
     //New Feature 2: difficulty level system
     public void updateGameSpeed(int level) {
         int newSpeed = Math.max(
@@ -127,6 +142,13 @@ public class GuiController implements Initializable {
                         moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
                         keyEvent.consume();
                     }
+
+                    // New Feature 4: hard landing method
+                    if (keyEvent.getCode() == KeyCode.SPACE) {
+                        hardDrop(new MoveEvent(EventType.DOWN, EventSource.USER));
+                        keyEvent.consume();
+                    }
+
                 }
 
                 //New Feature 3: Timed Mode - Mode selection

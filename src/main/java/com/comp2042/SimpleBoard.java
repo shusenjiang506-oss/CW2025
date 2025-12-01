@@ -81,6 +81,17 @@ public class SimpleBoard implements Board {
         }
     }
 
+    // Fix Bug 1: Game Over triggered prematurely due to incorrect brick spawn position
+    /*
+    @Override
+    public boolean createNewBrick() {
+        Brick currentBrick = brickGenerator.getBrick();
+        brickRotator.setBrick(currentBrick);
+        currentOffset = new Point(4, 10);
+        return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+    }
+    */
+
     @Override
     public boolean createNewBrick() {
         Brick currentBrick = brickGenerator.getBrick();
@@ -88,6 +99,7 @@ public class SimpleBoard implements Board {
         currentOffset = new Point(4, 0);
         return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
     }
+
 
     @Override
     public int[][] getBoardMatrix() {
@@ -123,5 +135,15 @@ public class SimpleBoard implements Board {
         currentGameMatrix = new int[width][height];
         score.reset();
         createNewBrick();
+    }
+
+    // New Feature 4: hard landing method
+    @Override
+    public int hardDrop() {
+        int dropDistance = 0;
+        while (moveBrickDown()) {
+            dropDistance++;
+        }
+        return dropDistance;
     }
 }
