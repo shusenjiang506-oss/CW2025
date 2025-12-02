@@ -69,6 +69,12 @@ public class GuiController implements Initializable {
     private int currentTimeSeconds = 0;
     private GameMode selectedMode = GameMode.CLASSIC;
 
+    //New Feature 5: UI Display
+    private Label modeLabel;
+    private Label levelDisplayLabel;
+    private Label scoreLabel;
+    private Label timerLabel;
+
     private Rectangle[][] displayMatrix;
 
     private InputEventListener eventListener;
@@ -106,6 +112,11 @@ public class GuiController implements Initializable {
         NotificationPanel levelUpPanel = new NotificationPanel("Level " + level + "!");
         groupNotification.getChildren().add(levelUpPanel);
         levelUpPanel.showScore(groupNotification.getChildren());
+
+        //New Feature 5: UI Display - Update level
+        if (levelDisplayLabel != null) {
+            levelDisplayLabel.setText("Level: " + level);
+        }
 
         timeLine.stop();
         timeLine = new Timeline(new KeyFrame(
@@ -197,7 +208,11 @@ public class GuiController implements Initializable {
         reflection.setFraction(0.8);
         reflection.setTopOpacity(0.9);
         reflection.setTopOffset(-12);
+
+        //New Feature 5: UI Display
+        createInfoLabels();
     }
+
     // New Feature 1: P - Pause
     private void togglePause() {
         if (isGameOver.getValue() == Boolean.TRUE) {
@@ -308,6 +323,12 @@ public class GuiController implements Initializable {
     }
 
     public void bindScore(IntegerProperty integerProperty) {
+        //New Feature 5: UI Display - Bind score
+        if (scoreLabel != null) {
+            integerProperty.addListener((obs, oldVal, newVal) -> {
+                scoreLabel.setText("Score: " + newVal);
+            });
+        }
     }
 
     public void gameOver() {
@@ -339,6 +360,26 @@ public class GuiController implements Initializable {
         isPause.setValue(Boolean.FALSE);
         isGameOver.setValue(Boolean.FALSE);
 
+        //New Feature 5: UI Display - Update mode display
+        if (modeLabel != null) {
+            if (selectedMode == GameMode.CLASSIC) {
+                modeLabel.setText("Mode: Classic");
+                timerLabel.setVisible(false);
+            } else {
+                modeLabel.setText("Mode: Timed (2 min)");
+                timerLabel.setVisible(true);
+                timerLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #FF6B6B; -fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 5;");
+            }
+        }
+
+        //New Feature 5: UI Display - Reset displays
+        if (levelDisplayLabel != null) {
+            levelDisplayLabel.setText("Level: 1");
+        }
+        if (scoreLabel != null) {
+            scoreLabel.setText("Score: 0");
+        }
+
         //New Feature 3: Timed Mode - Start timer if timed mode selected
         if (selectedMode == GameMode.TIMED) {
             startTimer(TIMED_MODE_SECONDS);
@@ -353,6 +394,11 @@ public class GuiController implements Initializable {
     //New Feature 3: Timed Mode
     public void startTimer(int totalSeconds) {
         currentTimeSeconds = totalSeconds;
+
+        //New Feature 5: UI Display - Show timer
+        if (timerLabel != null) {
+            timerLabel.setVisible(true);
+        }
 
         if (timerTimeline != null) {
             timerTimeline.stop();
@@ -380,6 +426,44 @@ public class GuiController implements Initializable {
         int minutes = seconds / 60;
         int secs = seconds % 60;
         String timeText = String.format("Time: %d:%02d", minutes, secs);
+
+        //New Feature 5: UI Display - Update timer display
+        if (timerLabel != null) {
+            timerLabel.setText(timeText);
+
+            if (seconds <= 30) {
+                timerLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #FF0000; -fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 5; -fx-font-weight: bold;");
+            }
+        }
+
         System.out.println(timeText);
+    }
+
+    //New Feature 5: UI Display - Create info labels
+    private void createInfoLabels() {
+        modeLabel = new Label("Mode: Classic");
+        modeLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white; -fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 5;");
+        modeLabel.setLayoutX(10);
+        modeLabel.setLayoutY(-180);
+        groupNotification.getChildren().add(modeLabel);
+
+        levelDisplayLabel = new Label("Level: 1");
+        levelDisplayLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #FFD700; -fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 5;");
+        levelDisplayLabel.setLayoutX(10);
+        levelDisplayLabel.setLayoutY(-155);
+        groupNotification.getChildren().add(levelDisplayLabel);
+
+        scoreLabel = new Label("Score: 0");
+        scoreLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #00FF00; -fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 5;");
+        scoreLabel.setLayoutX(10);
+        scoreLabel.setLayoutY(-130);
+        groupNotification.getChildren().add(scoreLabel);
+
+        timerLabel = new Label("Time: 2:00");
+        timerLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #FF6B6B; -fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 5;");
+        timerLabel.setLayoutX(10);
+        timerLabel.setLayoutY(-105);
+        timerLabel.setVisible(false);
+        groupNotification.getChildren().add(timerLabel);
     }
 }
