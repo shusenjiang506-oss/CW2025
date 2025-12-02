@@ -1,4 +1,4 @@
-package comp2042;
+package com.comp2042;
 
 import com.comp2042.Score;
 import com.comp2042.SimpleBoard;

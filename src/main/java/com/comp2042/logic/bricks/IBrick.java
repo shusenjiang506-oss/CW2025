@@ -1,6 +1,6 @@
 package com.comp2042.logic.bricks;
 
-final class IBrick extends AbstractBrick {
+public final class IBrick extends AbstractBrick {
 
     private static final int BRICK_COLOR = 1;
 
