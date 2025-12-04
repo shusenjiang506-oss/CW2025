@@ -14,8 +14,16 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+/**
+ * Panel that displays animated score notifications
+ */
 public class NotificationPanel extends BorderPane {
 
+    /**
+     * Creates a new notification panel with the specified text
+     *
+     * @param text the text to display in the notification
+     */
     public NotificationPanel(String text) {
         setMinHeight(200);
         setMinWidth(220);
@@ -28,6 +36,11 @@ public class NotificationPanel extends BorderPane {
 
     }
 
+    /**
+     * Displays the notification with fade and translate animations
+     *
+     * @param list the list of nodes to remove this notification from after animation
+     */
     public void showScore(ObservableList<Node> list) {
         FadeTransition ft = new FadeTransition(Duration.millis(2000), this);
         TranslateTransition tt = new TranslateTransition(Duration.millis(2500), this);

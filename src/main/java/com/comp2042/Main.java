@@ -9,8 +9,17 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Main application class that launches the Tetris game
+ */
 public class Main extends Application {
 
+    /**
+     * Starts the JavaFX application and initializes the game
+     *
+     * @param primaryStage the primary stage for the application
+     * @throws Exception if FXML loading fails
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -27,7 +36,11 @@ public class Main extends Application {
         new GameController(c);
     }
 
-
+    /**
+     * Main entry point of the application
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }

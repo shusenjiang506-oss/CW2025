@@ -24,17 +24,46 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.scene.control.Label;
 
+/**
+ * Main GUI controller that handles view rendering and user input
+ */
 public class GuiController implements Initializable {
 
+    /**
+     * Size of each brick cell in pixels
+     */
     private static final int BRICK_SIZE = 20;
+
     //New Feature 2: difficulty level system
+    /**
+     * Base game speed in milliseconds for level 1
+     */
     private static final int BASE_GAME_SPEED_MS = 500;
+
+    /**
+     * Minimum game speed in milliseconds at highest level
+     */
     private static final int MIN_GAME_SPEED_MS = 100;
+
     //New Feature 3: Timed Mode
+    /**
+     * Duration of timed mode in seconds
+     */
     private static final int TIMED_MODE_SECONDS = 120;
+
+    /**
+     * Y-axis offset for brick panel layout
+     */
     private static final int LAYOUT_Y_OFFSET = -42;
+
+    /**
+     * Row offset for display matrix to hide top rows
+     */
     private static final int DISPLAY_ROW_OFFSET = 2;
 
+    /**
+     * Array of colors for different brick types
+     */
     private static final Color[] BRICK_COLORS = {
             Color.TRANSPARENT,
             Color.AQUA,
@@ -62,33 +91,90 @@ public class GuiController implements Initializable {
     private GameOverPanel gameOverPanel;
 
     // New Feature 1: P - Pause
+    /**
+     * Panel displayed when game is paused
+     */
     private PausePanel pausePanel;
+
     //New Feature 3: Timed Mode
+    /**
+     * Panel showing mode selection hints
+     */
     private ModeHintPanel modeHintPanel;
+
+    /**
+     * Timeline for countdown timer in timed mode
+     */
     private Timeline timerTimeline;
+
+    /**
+     * Current remaining time in seconds for timed mode
+     */
     private int currentTimeSeconds = 0;
+
+    /**
+     * Currently selected game mode
+     */
     private GameMode selectedMode = GameMode.CLASSIC;
 
     //New Feature 5: UI Display
+    /**
+     * Label displaying current game mode
+     */
     private Label modeLabel;
+
+    /**
+     * Label displaying current level
+     */
     private Label levelDisplayLabel;
+
+    /**
+     * Label displaying current score
+     */
     private Label scoreLabel;
+
+    /**
+     * Label displaying remaining time in timed mode
+     */
     private Label timerLabel;
 
+    /**
+     * Matrix of rectangles representing the game board
+     */
     private Rectangle[][] displayMatrix;
 
+    /**
+     * Listener for input events
+     */
     private InputEventListener eventListener;
 
+    /**
+     * Matrix of rectangles representing the current brick
+     */
     private Rectangle[][] rectangles;
 
+    /**
+     * Timeline controlling automatic brick descent
+     */
     private Timeline timeLine;
 
+    /**
+     * Property tracking pause state
+     */
     private final BooleanProperty isPause = new SimpleBooleanProperty();
 
+    /**
+     * Property tracking game over state
+     */
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
 
 
     // New Feature 4: hard landing method
+    /**
+     * Handles hard drop action where brick instantly drops to bottom
+     *
+     * @param event the move event
+     */
     private void hardDrop(MoveEvent event) {
         if (isPause.getValue() == Boolean.FALSE) {
             DownData downData = ((GameController)eventListener).onHardDropEvent(event);
@@ -103,6 +189,11 @@ public class GuiController implements Initializable {
     }
 
     //New Feature 2: difficulty level system
+    /**
+     * Updates game speed based on current level
+     *
+     * @param level the current difficulty level
+     */
     public void updateGameSpeed(int level) {
         int newSpeed = Math.max(
                 BASE_GAME_SPEED_MS - (level - 1) * 40,
@@ -128,6 +219,12 @@ public class GuiController implements Initializable {
 
     }
 
+    /**
+     * Initializes the controller after FXML loading
+     *
+     * @param location URL location
+     * @param resources resource bundle
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
@@ -214,6 +311,9 @@ public class GuiController implements Initializable {
     }
 
     // New Feature 1: P - Pause
+    /**
+     * Toggles pause state of the game
+     */
     private void togglePause() {
         if (isGameOver.getValue() == Boolean.TRUE) {
             return;
@@ -239,6 +339,12 @@ public class GuiController implements Initializable {
         gamePanel.requestFocus();
     }
 
+    /**
+     * Initializes the game view with board matrix and initial brick
+     *
+     * @param boardMatrix the game board matrix
+     * @param brick initial brick view data
+     */
     public void initGameView(int[][] boardMatrix, ViewData brick) {
         displayMatrix = new Rectangle[boardMatrix.length][boardMatrix[0].length];
         for (int i = DISPLAY_ROW_OFFSET; i < boardMatrix.length; i++) {
@@ -271,6 +377,12 @@ public class GuiController implements Initializable {
         timeLine.play();
     }
 
+    /**
+     * Gets the fill color for a brick based on color index
+     *
+     * @param colorIndex index of the color
+     * @return the corresponding paint color
+     */
     private Paint getFillColor(int colorIndex) {
         if (colorIndex >= 0 && colorIndex < BRICK_COLORS.length) {
             return BRICK_COLORS[colorIndex];
@@ -279,6 +391,11 @@ public class GuiController implements Initializable {
     }
 
 
+    /**
+     * Refreshes the brick display with updated view data
+     *
+     * @param brick updated brick view data
+     */
     private void refreshBrick(ViewData brick) {
         if (isPause.getValue() == Boolean.FALSE) {
             brickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * brickPanel.getVgap() + brick.getxPosition() * BRICK_SIZE);
@@ -291,6 +408,11 @@ public class GuiController implements Initializable {
         }
     }
 
+    /**
+     * Refreshes the game background with updated board state
+     *
+     * @param board the updated board matrix
+     */
     public void refreshGameBackground(int[][] board) {
         for (int i = DISPLAY_ROW_OFFSET; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
@@ -299,12 +421,23 @@ public class GuiController implements Initializable {
         }
     }
 
+    /**
+     * Sets the visual properties of a rectangle based on color code
+     *
+     * @param color the color code
+     * @param rectangle the rectangle to update
+     */
     private void setRectangleData(int color, Rectangle rectangle) {
         rectangle.setFill(getFillColor(color));
         rectangle.setArcHeight(9);
         rectangle.setArcWidth(9);
     }
 
+    /**
+     * Handles brick moving down and updates display
+     *
+     * @param event the move event
+     */
     private void moveDown(MoveEvent event) {
         if (isPause.getValue() == Boolean.FALSE) {
             DownData downData = eventListener.onDownEvent(event);
@@ -318,10 +451,20 @@ public class GuiController implements Initializable {
         gamePanel.requestFocus();
     }
 
+    /**
+     * Sets the event listener for input handling
+     *
+     * @param eventListener the event listener to set
+     */
     public void setEventListener(InputEventListener eventListener) {
         this.eventListener = eventListener;
     }
 
+    /**
+     * Binds score property to UI display
+     *
+     * @param integerProperty the score property to bind
+     */
     public void bindScore(IntegerProperty integerProperty) {
         //New Feature 5: UI Display - Bind score
         if (scoreLabel != null) {
@@ -331,6 +474,9 @@ public class GuiController implements Initializable {
         }
     }
 
+    /**
+     * Handles game over state
+     */
     public void gameOver() {
         timeLine.stop();
         //New Feature 3: Timed Mode
@@ -341,6 +487,11 @@ public class GuiController implements Initializable {
         isGameOver.setValue(Boolean.TRUE);
     }
 
+    /**
+     * Starts a new game
+     *
+     * @param actionEvent the action event triggering new game
+     */
     public void newGame(ActionEvent actionEvent) {
         timeLine.stop();
         //New Feature 3: Timed Mode
@@ -386,12 +537,22 @@ public class GuiController implements Initializable {
         }
     }
 
+    /**
+     * Pauses the game
+     *
+     * @param actionEvent the action event
+     */
     public void pauseGame(ActionEvent actionEvent) {
         // New Feature 1: P - Pause
         togglePause();
     }
 
     //New Feature 3: Timed Mode
+    /**
+     * Starts the countdown timer for timed mode
+     *
+     * @param totalSeconds total duration in seconds
+     */
     public void startTimer(int totalSeconds) {
         currentTimeSeconds = totalSeconds;
 
@@ -422,6 +583,11 @@ public class GuiController implements Initializable {
         updateTimerDisplay(currentTimeSeconds);
     }
 
+    /**
+     * Updates the timer display with remaining time
+     *
+     * @param seconds remaining seconds
+     */
     private void updateTimerDisplay(int seconds) {
         int minutes = seconds / 60;
         int secs = seconds % 60;
@@ -440,6 +606,9 @@ public class GuiController implements Initializable {
     }
 
     //New Feature 5: UI Display - Create info labels
+    /**
+     * Creates and initializes the information display labels
+     */
     private void createInfoLabels() {
         modeLabel = new Label("Mode: Classic");
         modeLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white; -fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 5;");

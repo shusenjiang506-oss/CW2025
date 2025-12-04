@@ -6,14 +6,28 @@ import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Utility class providing matrix operations for the game board and bricks
+ */
 public class MatrixOperations {
 
 
-    //We don't want to instantiate this utility class
+    /**
+     * Private constructor to prevent instantiation of utility class
+     */
     private MatrixOperations(){
 
     }
 
+    /**
+     * Checks if a brick intersects with the board or goes out of bounds
+     *
+     * @param matrix the game board matrix
+     * @param brick the brick matrix
+     * @param x the x-position of the brick
+     * @param y the y-position of the brick
+     * @return true if there is an intersection or out of bounds, false otherwise
+     */
     public static boolean intersect(final int[][] matrix, final int[][] brick, int x, int y) {
         for (int i = 0; i < brick.length; i++) {
             for (int j = 0; j < brick[i].length; j++) {
@@ -27,6 +41,25 @@ public class MatrixOperations {
         return false;
     }
 
+    /*
+    private static boolean checkOutOfBound(int[][] matrix, int targetX, int targetY) {
+        boolean returnValue = true;
+        if (targetX >= 0 && targetY < matrix.length && targetX < matrix[targetY].length) {
+            returnValue = false;
+        }
+        return returnValue;
+    }
+        */
+
+    // Fixed: Added null check and reordered bounds checking to prevent ArrayIndexOutOfBoundsException
+    /**
+     * Checks if the given coordinates are out of bounds of the matrix
+     *
+     * @param matrix the matrix to check against
+     * @param targetX the x-coordinate
+     * @param targetY the y-coordinate
+     * @return true if out of bounds, false otherwise
+     */
     private static boolean checkOutOfBound(int[][] matrix, int targetX, int targetY) {
         if (matrix == null || matrix.length == 0) {
             return true;
@@ -37,6 +70,12 @@ public class MatrixOperations {
         return targetX >= matrix[targetY].length;
     }
 
+    /**
+     * Creates a deep copy of a 2D integer array
+     *
+     * @param original the original matrix to copy
+     * @return a deep copy of the matrix
+     */
     public static int[][] copy(int[][] original) {
         int[][] myInt = new int[original.length][];
         for (int i = 0; i < original.length; i++) {
@@ -48,6 +87,15 @@ public class MatrixOperations {
         return myInt;
     }
 
+    /**
+     * Merges a brick into the game board matrix at the specified position
+     *
+     * @param filledFields the current board state
+     * @param brick the brick matrix to merge
+     * @param x the x-position to merge at
+     * @param y the y-position to merge at
+     * @return a new matrix with the brick merged
+     */
     public static int[][] merge(int[][] filledFields, int[][] brick, int x, int y) {
         int[][] copy = copy(filledFields);
         for (int i = 0; i < brick.length; i++) {
@@ -62,6 +110,12 @@ public class MatrixOperations {
         return copy;
     }
 
+    /**
+     * Checks for and removes completed rows from the matrix
+     *
+     * @param matrix the game board matrix
+     * @return information about cleared rows including the new matrix and score bonus
+     */
     public static ClearRow checkRemoving(final int[][] matrix) {
         int[][] tmp = new int[matrix.length][matrix[0].length];
         Deque<int[]> newRows = new ArrayDeque<>();
@@ -94,6 +148,12 @@ public class MatrixOperations {
         return new ClearRow(clearedRows.size(), tmp, scoreBonus);
     }
 
+    /**
+     * Creates a deep copy of a list of 2D integer arrays
+     *
+     * @param list the list to copy
+     * @return a deep copy of the list
+     */
     public static List<int[][]> deepCopyList(List<int[][]> list){
         return list.stream().map(MatrixOperations::copy).collect(Collectors.toList());
     }
